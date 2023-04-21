@@ -17,6 +17,9 @@ The implementation follows as:
 
 - First i stored the input recipee files on my Azure blob storage inside **_data_** container and the final output beef recipie files are stored inside **_output_** container of the same storage namely **_sparkexamstorage_**.
 
+![container](https://github.com/saadather94/exam/blob/Addo_Task/Syed-Shah-Asad-data-engineering-test/Azure%20DataBricks/Azure-StorageContainers-ScreenShot.jpg)
+
+
 - Then on Databricks i created a spark job that will run the spark script **_[SPARK_JOB_SCRIPT.py]_**.
     - _SPARK_JOB_SCRIPT.py_ has all the required functions implemented required for sucessully completion of the desired output. 
     - So first the libraries and spark session is created followed by my Azure blob storage authentication and accesskey.
@@ -26,18 +29,33 @@ The implementation follows as:
         
 - So to run the spark job preodically i had schedulled it to run every day at 00:00 hrs (12AM) and in case of job failure i will recieve an email. Job completion screenshot can be seen in **[Azure DataBricks]** folder as **_SPARK_JOB_RUN-ScreenShot.jpg_**
 
+![sparkJob](https://github.com/saadather94/exam/blob/Addo_Task/Syed-Shah-Asad-data-engineering-test/Azure%20DataBricks/SPARK_JOB_RUN-ScreenShot.jpg)
+
+
+The Azure storage output container gets updated after the sucessfull job completion task, for simplicity i have just show a single recipee screenshot below:
+
+![outstorage](https://github.com/saadather94/exam/blob/Addo_Task/Syed-Shah-Asad-data-engineering-test/Azure%20DataBricks/Output-Recipe-ScreenShot.jpg)
+
+
+
 - I have also shared some other screenshots related to my Azure storage containers and its final outputs as well inside the Databricks folder.
 
 ## Dashboard 
 
-Apart from the spark task implementation, i have also done the analytics on the final beefrecipie and created a dashboard on Databricks it can be seen below as a screen shot and also stored the Dashboard view as HTML which can be seen inside folder **[Azure DataBricks]** under the name **_Dashboard.html_**
+Apart from the spark task implementation, i have also done the analytics on the final beefrecipie and created a dashboard on Databricks it can be seen below as a screen shot inside folder **[Azure DataBricks]**. The dashboard represents the analytics off all the three processed recipe files.
 
-[Dashboard]()
-
-
+![Dashboard](https://github.com/saadather94/exam/blob/Addo_Task/Syed-Shah-Asad-data-engineering-test/Azure%20DataBricks/FinalBeefRecipe-Dashboard-ScreenShot.jpg)
 
 
-[TASK.ipynb]: 
-[SPARK_JOB_SCRIPT.py]: 
-[Azure DataBricks]: 
+
+
+[TASK.ipynb]: https://github.com/saadather94/exam/blob/Addo_Task/Syed-Shah-Asad-data-engineering-test/TASK.ipynb "Task"
+[SPARK_JOB_SCRIPT.py]: https://github.com/saadather94/exam/blob/Addo_Task/Syed-Shah-Asad-data-engineering-test/Azure%20DataBricks/SPARK_JOB_SCRIPT.py "SparkJob"
+[Azure DataBricks]: https://github.com/saadather94/exam/tree/Addo_Task/Syed-Shah-Asad-data-engineering-test/Azure%20DataBricks "DataBricks"
+
+
+
+
+
+
 
