@@ -1,0 +1,5 @@
+findspark==2.0.1
+pyspark==3.2.1
+idx2numpy==1.2.3
+numpy==1.22.4
+pandas==1.4.3
