@@ -9,7 +9,7 @@ The detail and hierarchy of each folder and the files is given below:
 - **Azure DataBricks:** Contains results/screenshots/Dashboard of the implementations done on Azure Databricks cluster. 
 
 ## Implemeted Task's Overview
-For the required tasks, three input recipe files of **_.json_** format are given in input folder for processing. So, for this assignment, i implemented all the tasks first in my local system and its implementation can be seen inside the **[TASK.ipynb]** and the tasks final output is stored in the output folder which contains the recipe of the dishes having only the beef in their ingredients or in their dish name.
+For the required tasks, three input recipe files of **_.json_** format are given in input folder for processing. So, for this assignment, i implemented all the tasks first in my local system and its implementation can be seen inside the **[TASK.ipynb]** and the tasks final output is stored in the output folder which contains average cook time and difficulty per recipe file.
 
 Since in real time enviroment all the data/files are being dumped/stored on some cloud based storage. So assuming such a case, i had used Azure databricks and run the spark job on databrick's cluster and its implementation and results are present inside the folder **[Azure DataBricks]**  
 
