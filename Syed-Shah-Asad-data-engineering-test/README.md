@@ -15,7 +15,7 @@ Since in real time enviroment all the data/files are being dumped/stored on some
 
 The implementation follows as:
 
-- First i stored the input recipee files on my Azure blob storage inside **_data_** container and the final output beef recipie files are stored inside **_output_** container of the same storage namely **_sparkexamstorage_**.
+- First i stored the input recipee files on my Azure blob storage inside **_data_** container and the final output recipie files based on average cook time and difficulty are stored inside **_output_** container of the same storage namely **_sparkexamstorage_**.
 
 ![container](https://github.com/saadather94/exam/blob/Addo_Task/Syed-Shah-Asad-data-engineering-test/Azure%20DataBricks/Azure-StorageContainers-ScreenShot.jpg)
 
@@ -25,7 +25,7 @@ The implementation follows as:
     - So first the libraries and spark session is created followed by my Azure blob storage authentication and accesskey.
     - Then two user defined functions **get_time()** is implemeted that will extract the time in minutes using the regular expression and the other function **extract_serving_value()** is implemented that will get the number of per serving of the dishes, in some records the serving is written as "3 to 7 serving" so in such a case i extracted the numeric values and return the average serving which will be for this case is 5 after rounding off. 
     - Then for the TASK 1 implementation i had defined a function called preprocess() that will do all the preprocessing tasks such as replacing the null values, geting time in minutes, getting the serving into a single numeric entity and removing extra punctuations and getting a same lower case string for dish and ingredients column. This preprcessed dataframe is persisted into the memory for further tasks.
-    - Then for TASK 2 total cook time, dish's difficulty level and dishes having beef is required to be extracte as a final result in _'csv'_ format. For that **BeefRecipies()** function is defined that will do the job. Although the final dataset is required to only have two columns but i kept the DishName, Ingredients, Cooktime, Preptime, Total Cook time and difficulty for clear representation. And they can be removed anytime upon our will by selecting only the Total Cook time and difficulty columns.
+    - Then for TASK 2 total cook time, dish's difficulty level is required. For that **TASK2DF()** function is defined that will do the job. Then the resulting dataframe is used to extract the beef recipies. Then average cooking time is calculated based on per difficulty level and the output result are renamed and stored as a _.csv_ file on the Azure output storage container for each file present inside the input container of storage. 
         
 - So to run the spark job preodically i had schedulled it to run every day at 00:00 hrs (12AM) and in case of job failure i will recieve an email. Job completion screenshot can be seen in **[Azure DataBricks]** folder as **_SPARK_JOB_RUN-ScreenShot.jpg_**
 
