@@ -1,70 +1,43 @@
-# Spark Practical Problem Statement Exam
-
-Thank you for your interest in joining ADDO-AI! As part of our training process, all of our candidates must take the following test.
-The test is designed to assess key competencies required in your role as a data engineer at ADDO-AI.
-
-Please submit your answers in a different branch and create a pull request, then send a link to asadshah@addo.ai. Please do not merge your own pull request.
-
-_Note: While we love open source here at ADDO-AI, please do not share this test with your mates!._
+# Addo Spark tasks Repository
 
 
-### Scenerio
-We ingest events from our Kafka Stream and store them in our DataLake on s3. 
-Events are sorted by arriving date. For example `events/recipe_changes/2019/11/29`.
-During events processing we heavily rely on execution day to make sure we pick proper chunk of data and keep historical results.
-We can use Apache Spark to work with data and store it on s3 in parquet format. Our primary programming language is Python.
+The detail and hierarchy of each folder and the files is given below:
 
-# Exercise
-## Overview
-We have a big recipes archive that was created over the last 8 years. 
-It is constantly being updated either by adding new recipes or by making changes to existing ones. 
-We have a service that can dump archive in JSON format to selected s3 location. 
-We are interested in tracking changes to see available recipes, their cooking time and difficulty level.
+- **input:** Contains the recipee files, ready to be used for spark processing.
+- **TASK.ipynb:** Notebook contains task implementation on my local system spark enviroment.
+- **output:** Beef recipe results, implemented inside Task.ipynb notebook.
+- **Azure DataBricks:** Contains results/screenshots/Dashboard of the implementations done on Azure Databricks cluster. 
 
-## Task 1
-Using Apache Spark and Python, read, pre-process and persist rows to ensure optimal structure and performance for further processing.  
-The source events are located on the `input` folder. 
+## Implemeted Task's Overview
+For the required tasks, three input recipe files of **_.json_** format are given in input folder for processing. So, for this assignment, i implemented all the tasks first in my local system and its implementation can be seen inside the **[TASK.ipynb]** and the tasks final output is stored in the output folder which contains the recipe of the dishes having only the beef in their ingredients or in their dish name.
 
-## Task 2
-Using Apache Spark and Python read processed dataset from Task 1 and: 
-1. Extract only recipes that have `beef` as one of the ingredients.
-2. Calculate average cooking time duration per difficulty level.
-3. Persist dataset as CSV to the `output` folder.  
-  The dataset should have 2 columns: `difficulty,avg_total_cooking_time`.
+Since in real time enviroment all the data/files are being dumped/stored on some cloud based storage. So assuming such a case, i had used Azure databricks and run the spark job on databrick's cluster and its implementation and results are present inside the folder **[Azure DataBricks]**  
 
-Total cooking time duration can be calculated by formula:
-```bash
-total_cook_time = cookTime + prepTime
-```  
-Hint: times represent durations in ISO format.
+The implementation follows as:
 
-Criteria for levels based on total cook time duration:
-- easy - less than 30 mins
-- medium - between 30 and 60 mins
-- hard - more than 60 mins.
+- First i stored the input recipee files on my Azure blob storage inside **_data_** container and the final output beef recipie files are stored inside **_output_** container of the same storage namely **_sparkexamstorage_**.
 
-## Deliverables
-- A deployable Spark Application written in Python.
-- A separate `ETL_README.md` file with a brief explanation of the approach, data exploration and assumptions/considerations. 
-- CSV output dataset from Task 2.
+- Then on Databricks i created a spark job that will run the spark script **_[SPARK_JOB_SCRIPT.py]_**.
+    - _SPARK_JOB_SCRIPT.py_ has all the required functions implemented required for sucessully completion of the desired output. 
+    - So first the libraries and spark session is created followed by my Azure blob storage authentication and accesskey.
+    - Then two user defined functions **get_time()** is implemeted that will extract the time in minutes using the regular expression and the other function **extract_serving_value()** is implemented that will get the number of per serving of the dishes, in some records the serving is written as "3 to 7 serving" so in such a case i extracted the numeric values and return the average serving which will be for this case is 5 after rounding off. 
+    - Then for the TASK 1 implementation i had defined a function called preprocess() that will do all the preprocessing tasks such as replacing the null values, geting time in minutes, getting the serving into a single numeric entity and removing extra punctuations and getting a same lower case string for dish and ingredients column. This preprcessed dataframe is persisted into the memory for further tasks.
+    - Then for TASK 2 total cook time, dish's difficulty level and dishes having beef is required to be extracte as a final result in _'csv'_ format. For that **BeefRecipies()** function is defined that will do the job. Although the final dataset is required to only have two columns but i kept the DishName, Ingredients, Cooktime, Preptime, Total Cook time and difficulty for clear representation. And they can be removed anytime upon our will by selecting only the Total Cook time and difficulty columns.
+        
+- So to run the spark job preodically i had schedulled it to run every day at 00:00 hrs (12AM) and in case of job failure i will recieve an email. Job completion screenshot can be seen in **[Azure DataBricks]** folder as **_SPARK_JOB_RUN-ScreenShot.jpg_**
 
-## Requirements
-- Well structured code: we expect maintainability, extensibility, readability and well defined abstractions with clear responsibilities.
-- Resiliency and scalability: the application should be able to handle variability of the data, and to scale if data volume increases.
-- Solution is runnable locally on an isolated environment (e.g. Python virtual env or Docker container) and also deployable on a cluster (including dependency packaging). An iPython notebook is not sufficient.
-- Unit tests for the different components.
-- Proper exception handling.
-- Logging.
-- Documentation.
+- I have also shared some other screenshots related to my Azure storage containers and its final outputs as well inside the Databricks folder.
 
-NOTE: If you are using code in your submission that was not written by you, please be sure to attribute it to it's original author.
+## Dashboard 
 
-## Bonus points
-- Config management.
-- Data quality checks (like input/output dataset validation).
-- How would you implement CI/CD for this application?
-- How would you diagnose and tune the application in case of performance problems?
-- How would you schedule this pipeline to run periodically?
-- We appreciate good combination of Software and Data Engineering.
+Apart from the spark task implementation, i have also done the analytics on the final beefrecipie and created a dashboard on Databricks it can be seen below as a screen shot and also stored the Dashboard view as HTML which can be seen inside folder **[Azure DataBricks]** under the name **_Dashboard.html_**
 
-Good Luck!
+[Dashboard]()
+
+
+
+
+[TASK.ipynb]: 
+[SPARK_JOB_SCRIPT.py]: 
+[Azure DataBricks]: 
+
