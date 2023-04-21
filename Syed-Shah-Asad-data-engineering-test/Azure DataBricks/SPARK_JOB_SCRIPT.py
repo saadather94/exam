@@ -192,64 +192,69 @@ def PrePocessing(df):
 
   return df2
 
-
 ###########################################################
 ##### TASK 2 ##############################################
 ########################################################### 
 
-def BeefRecipies(df2):
+def TASK2DF(df2):
 
 
   # Create a new column by adding two existing columns
   df2 = df2.withColumn('Total_cook_time', col('Cook_Time') + col('Prep_Time'))
 
-  # Create a new column based on the total cook time,
+  # Create a new column based on the value of the 'sum' column
   df2 = df2.withColumn('Difficulty', when(col('Total_cook_time') < 30, 'Easy')
                                     .when((col('Total_cook_time') >= 30) & (col('Total_cook_time') <= 60), 'Medium')
                                     .when(col('Total_cook_time') > 60, 'Hard'))
 
 
-
-  # Creating a table EXAM from dataframe, for quering the beef from record
-  df2.createOrReplaceTempView('EXAM')
-
-  # SQL query that shows the dishes having beef in their ingredites or in dish name 
-  beef_recipe = spark.sql("select * from EXAM where (Ingridients like '%beef%') or (Dish_Name like '%beef%')")
-
-  return beef_recipe
-
-################################################################################################
-
+  return df2
 
 
 df = {}
+
 # Iterate over all the saved records on the cloud storage and perform operations based on our tasks requirement.
 for l in range(len(input_loc)):
-
-  # Getting the file name and creating a dataframe according to its name.
   file_location = input_loc[l][0]
   df[file_location[-16:-5]] = spark.read.format(inp_file_type).load(file_location)
-
+  output_folder = f"wasbs://{out_container}@{storage_account_name}.blob.core.windows.net/Output-{file_location[-16:-5]}/"
 
   # ##### TASK 1 
   df2 = PrePocessing(df[file_location[-16:-5]]) 
-
   # Persist the dataframe for future processing
   df[file_location[-16:-5]] = df2.persist()
 
+
+
+
   # ##### TASK 2
-  df2 = BeefRecipies(df[file_location[-16:-5]])
+  df[file_location[-16:-5]] =  TASK2DF(df[file_location[-16:-5]])
+  df2 = df[file_location[-16:-5]]
+
+  # Beef Recipe Extraction  
+  df2.createOrReplaceTempView('EXAM')
+  beef_recipe = spark.sql("select * from EXAM where (Ingridients like '%beef%') or (Dish_Name like '%beef%')")
+
+  # Calculating average cooking time duration per difficulty level of the whole dataset.
+  df2.createOrReplaceTempView('AvgCookDiff')
+  Avg_T_D = spark.sql("select Difficulty , ROUND(AVG(Total_cook_time),0) as AVGCook_Time from AvgCookDiff group by Difficulty")
+  
+  # Avg_T_D.show()
+  # break
 
 
   ##### Writing the final output to the Azure cloud storage  
-  output_folder = f"wasbs://{out_container}@{storage_account_name}.blob.core.windows.net/Output-{file_location[-16:-5]}/"
-  (df2.coalesce(1).write.mode("overwrite").option("header", "true").format(out_file_type).save(output_folder))
+  (Avg_T_D.coalesce(1).write.mode("overwrite").option("header", "true").format(out_file_type).save(output_folder))
 
-  # Get the name of the CSV file that was just saved to Azure blob storage
+  # Get the name of the wrangled-data CSV file that was just saved to Azure blob storage.
   files = dbutils.fs.ls(output_folder)
   output_file = [x for x in files if x.name.startswith("part-")]
 
-  # Renameing the file name since the save file has a very long name
+  # Renameing the file name since the save file has a very large name
   dbutils.fs.mv(output_file[0].path,f"{output_container_path}/Output-{file_location[-16:-5]}/Final-Recipee-{file_location[-8:-5]}.csv")
 
+  # #break
+
 ########################################################################################################################################
+
+
